@@ -1,0 +1,17 @@
+﻿<configuration>
+    <system.serviceModel>
+        <bindings>
+            <basicHttpBinding>
+                <binding name="BasicHttpBinding_IKhanAcademy" maxBufferSize="2147483647"
+                    maxReceivedMessageSize="2147483647">
+                    <security mode="None" />
+                </binding>
+            </basicHttpBinding>
+        </bindings>
+        <client>
+            <endpoint address="http://p2plendingdata.com/services/khanacademy.svc"
+                binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IKhanAcademy"
+                contract="Cloud.IKhanAcademy" name="BasicHttpBinding_IKhanAcademy" />
+        </client>
+    </system.serviceModel>
+</configuration>

@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KhanViewer", "KhanViewer\KhanViewer.csproj", "{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12F7393E-FFE1-4A7E-B714-2C3F3A70FE38} = {12F7393E-FFE1-4A7E-B714-2C3F3A70FE38}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KhanProxy", "KhanProxy\KhanProxy.csproj", "{12F7393E-FFE1-4A7E-B714-2C3F3A70FE38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{0348472C-73B6-4956-8542-7BBCFD36FFBD}"
+	ProjectSection(SolutionItems) = preProject
+		KhanViewer\Assets\ApplicationIcon_inkscape.svg = KhanViewer\Assets\ApplicationIcon_inkscape.svg
+		KhanViewer\Assets\background art.pdn = KhanViewer\Assets\background art.pdn
+		KhanViewer\Assets\background_art.png = KhanViewer\Assets\background_art.png
+		KhanViewer\Assets\background_inkscape.svg = KhanViewer\Assets\background_inkscape.svg
+		KhanViewer\Assets\category_background.svg = KhanViewer\Assets\category_background.svg
+		KhanViewer\Assets\khan.pdn = KhanViewer\Assets\khan.pdn
+		KhanViewer\Assets\khan2.pdn = KhanViewer\Assets\khan2.pdn
+		KhanViewer\Assets\large_mobile_app_tile.png = KhanViewer\Assets\large_mobile_app_tile.png
+		KhanViewer\Assets\large_pc_app_tile.png = KhanViewer\Assets\large_pc_app_tile.png
+		KhanViewer\Assets\screenshot_1.png = KhanViewer\Assets\screenshot_1.png
+		KhanViewer\Assets\screenshot_2.png = KhanViewer\Assets\screenshot_2.png
+		KhanViewer\Assets\screenshot_3.png = KhanViewer\Assets\screenshot_3.png
+		KhanViewer\Assets\small_mobile_app_tile.png = KhanViewer\Assets\small_mobile_app_tile.png
+		KhanViewer\Assets\splash_png_export.pdn = KhanViewer\Assets\splash_png_export.pdn
+		KhanViewer\Assets\splash_png_export.png = KhanViewer\Assets\splash_png_export.png
+		KhanViewer\Assets\splashscreen_inkscape.svg = KhanViewer\Assets\splashscreen_inkscape.svg
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DE5E121-BE76-480A-AB85-235A9ACFE2C8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{12F7393E-FFE1-4A7E-B714-2C3F3A70FE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F7393E-FFE1-4A7E-B714-2C3F3A70FE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F7393E-FFE1-4A7E-B714-2C3F3A70FE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F7393E-FFE1-4A7E-B714-2C3F3A70FE38}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

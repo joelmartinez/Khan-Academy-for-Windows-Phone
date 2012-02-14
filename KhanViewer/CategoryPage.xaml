@@ -1,0 +1,103 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="KhanViewer.CategoryPage"
+    xmlns:khaaaaan="clr-namespace:KhanViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768" 
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait" 
+    shell:SystemTray.IsVisible="True">
+
+    <!--Data context is set to sample data above and first item in sample data collection below and LayoutRoot contains the root grid where all other page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent" d:DataContext="{Binding Categories[0]}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <Image Margin="-30,72,-62,-28" Source="/watermark.png" Stretch="Fill" Grid.Row="1" Opacity="0.135" RenderTransformOrigin="0.5,0.5">
+        	<Image.RenderTransform>
+        		<CompositeTransform Rotation="90" TranslateX="-24" TranslateY="38"/>
+        	</Image.RenderTransform>
+        </Image>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="0,0,0,15">
+        	<StackPanel.Background>
+        		<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
+        	</StackPanel.Background>
+            <TextBlock x:Name="KhanTitle" Margin="9,0,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontFamily="Segoe WP Black" FontSize="14.667" Text="Khan Academy">
+            	<TextBlock.Foreground>
+            		<SolidColorBrush Color="{StaticResource PhoneInverseBackgroundColor}"/>
+            	</TextBlock.Foreground>
+            </TextBlock>
+            <ScrollViewer Margin="9,-7,0,0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" >
+            	<TextBlock x:Name="PlayListTitle" Text="{Binding Name}" Style="{StaticResource PhoneTextTitle1Style}" FontFamily="Segoe WP Semibold" FontSize="64" ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="86" Margin="0" Width="471">
+            		<TextBlock.Foreground>
+            			<SolidColorBrush Color="{StaticResource PhoneInverseBackgroundColor}"/>
+            		</TextBlock.Foreground>
+            	</TextBlock>
+            </ScrollViewer>
+        </StackPanel>
+
+        <!--ContentPanel contains details text. Place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,12,0">
+            <ListBox x:Name="MainListBox" Margin="0,0,-12,0" ItemsSource="{Binding Videos}" SelectionChanged="MainListBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>                    	
+                    	<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    		<!--<Rectangle Height="24" StrokeEndLineCap="Round" Stroke="Black" StrokeThickness="2" Width="44" RadiusY="5" RadiusX="5" Margin="-15,-25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.455,0.458">
+                    			<Rectangle.RenderTransform>
+                    				<CompositeTransform TranslateY="32"/>
+                    			</Rectangle.RenderTransform>
+	                        	<Rectangle.Fill>
+	                        		<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
+	                        	</Rectangle.Fill>
+	                        </Rectangle>-->
+
+                            <Border   
+                                BorderBrush="Gray" 
+                                Background="Black"
+                                BorderThickness="1" 
+                                Width="120" 
+                                Height="91" 
+                                VerticalAlignment="Top"
+                                Margin="0 0 0 20">
+                                <khaaaaan:PlaceImage 
+                                    Source="{Binding VideoScreenshotUri}" 
+                                    PlaceholderSource="Assets/placeholder.png"
+                                    Width="120"  />
+                            </Border>
+                            
+	                        <StackPanel Margin="0,0,0,25" Width="360">
+	                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextTitle2Style}" FontFamily="Segoe WP SemiLight" FontSize="26.667"/>
+	                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="12,-2,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+	                        </StackPanel>
+						</StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+ 
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>

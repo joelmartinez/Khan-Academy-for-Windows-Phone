@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="KhanProxy.Services.KhanAcademy" CodeBehind="KhanAcademy.svc.cs" %>
