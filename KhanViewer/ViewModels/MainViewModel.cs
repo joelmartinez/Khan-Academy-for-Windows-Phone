@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using KhanViewer.Models;
 using Microsoft.Phone.Shell;
+using GoogleAnalyticsTracker;
 
 namespace KhanViewer
 {
@@ -106,6 +107,12 @@ namespace KhanViewer
                 
                 CategoryItem.Initialize(this.Categories);
             }
+        }
+
+        public void TrackPageView(string title, string path)
+        {
+            Tracker tracker = new Tracker("UTXXXX", "http://khanacademyforwindowsphone.com");
+            tracker.TrackPageView(title, path);
         }
 
         #region Private Methods

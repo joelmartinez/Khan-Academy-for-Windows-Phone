@@ -32,7 +32,12 @@ namespace KhanViewer
 
             if (!App.ViewModel.HasUserSeenIntro())
             {
+                App.ViewModel.TrackPageView("Intro", "/Intro");
                 NavigationService.Navigate(new Uri("/Intro.xaml", UriKind.Relative));
+            }
+            else
+            {
+                App.ViewModel.TrackPageView("Main", "/");
             }
 
             DataContext = App.ViewModel;
