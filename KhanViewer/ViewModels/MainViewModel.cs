@@ -111,7 +111,7 @@ namespace KhanViewer
 
         public void TrackPageView(string title, string path)
         {
-            Tracker tracker = new Tracker("UTXXXX", "http://khanacademyforwindowsphone.com");
+            Tracker tracker = new Tracker("UA-859807-2", "http://khanacademyforwindowsphone.com");
             tracker.TrackPageView(title, path);
         }
 
