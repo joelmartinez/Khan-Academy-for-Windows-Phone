@@ -26,9 +26,15 @@ namespace KhanViewer
                 var vids = LocalStorage.GetVideos(this.Name);
                 foreach (var vid in vids) Videos.Add(vid);
 
-                // then kick off the server to the query
-                Clouds.GetVideosFromServer(this.Videos, this.Name);
                 loaded = true;
+
+                // now kick off the server to the query
+                Clouds.GetVideosFromServer(this.Videos, this.Name);
+            }
+            else if (this.Videos.Count == 0)
+            {
+                // if we've already loaded, but don't have any results, then need to try again
+                Clouds.GetVideosFromServer(this.Videos, this.Name);
             }
         }
 

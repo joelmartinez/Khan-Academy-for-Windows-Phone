@@ -5,11 +5,14 @@ using System.Linq;
 using KhanViewer.Models;
 using Microsoft.Phone.Shell;
 using GoogleAnalyticsTracker;
+using System.Windows;
 
 namespace KhanViewer
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        Tracker tracker = new Tracker("UA-859807-2", "http://khanacademyforwindowsphone.com");
+
         public MainViewModel()
         {
             this.Categories = new ObservableCollection<CategoryItem>();
@@ -38,6 +41,10 @@ namespace KhanViewer
         /// <param name="message">The error details to send to the developers.</param>
         public void SetError(string message)
         {
+            UIThread.Invoke(() =>
+                {
+                    MessageBox.Show(message);
+                });
             this.IsError = true;
             this.ErrorMessage = message;
 
@@ -111,7 +118,7 @@ namespace KhanViewer
 
         public void TrackPageView(string title, string path)
         {
-            Tracker tracker = new Tracker("UA-859807-2", "http://khanacademyforwindowsphone.com");
+            path = path.Replace('/', '-').Replace(' ', '_');
             tracker.TrackPageView(title, path);
         }
 

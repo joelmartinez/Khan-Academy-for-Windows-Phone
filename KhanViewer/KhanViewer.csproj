@@ -92,6 +92,7 @@
     <Compile Include="Models\KhanAcademyApi.cs" />
     <Compile Include="Models\LocalStorage.cs" />
     <Compile Include="Models\KhanClientTypes.cs" />
+    <Compile Include="Models\UIThread.cs" />
     <Compile Include="Models\WebHelper.cs" />
     <Compile Include="PlaceImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

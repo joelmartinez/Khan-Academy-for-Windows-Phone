@@ -56,8 +56,8 @@ namespace KhanViewer.Models
                         Description = k.Description, 
                         YoutubeId = k.YouTubeId,
                         VideoUri = new Uri(k.Url),
-                        VideoFileUri = new Uri(k.Downloads.Video),
-                        VideoScreenshotUri = new Uri(k.Downloads.Screenshot),
+                        VideoFileUri = k.Downloads != null ? new Uri(k.Downloads.Video) : null,
+                        VideoScreenshotUri = k.Downloads != null ? new Uri(k.Downloads.Screenshot) : null,
                         Parent = category });
                     if (serverItems.Count() > 0)
                     {

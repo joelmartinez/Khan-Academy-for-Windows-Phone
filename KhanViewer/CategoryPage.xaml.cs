@@ -28,7 +28,7 @@ namespace KhanViewer
             string selectedIndex = "";
             if (NavigationContext.QueryString.TryGetValue("name", out selectedIndex))
             {
-                App.ViewModel.TrackPageView(selectedIndex, "/Playlist/" + Uri.EscapeDataString(selectedIndex));
+                App.ViewModel.TrackPageView(selectedIndex, "/Playlist/" + selectedIndex);
                 var category = App.ViewModel.GetCategory(selectedIndex);//.Categories.Where(c => c.Name == selectedIndex).FirstOrDefault();
                 category.LoadVideos();
                 LayoutRoot.DataContext = category;

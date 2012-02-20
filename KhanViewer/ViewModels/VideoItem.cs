@@ -25,7 +25,7 @@ namespace KhanViewer
         public void Navigate()
         {
 
-            App.ViewModel.TrackPageView(this.Name, "/" + Uri.EscapeDataString(this.Parent) + "/Video/" + Uri.EscapeDataString(this.Name));
+            App.ViewModel.TrackPageView(this.Name, "/" + this.Parent + "/Video/" + this.Name);
             WebBrowserTask browser = new WebBrowserTask();
 
             if (this.VideoFileUri == null || string.IsNullOrWhiteSpace(this.VideoFileUri.ToString()))

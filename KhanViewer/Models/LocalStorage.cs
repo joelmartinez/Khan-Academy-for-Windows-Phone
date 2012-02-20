@@ -70,10 +70,19 @@ namespace KhanViewer.Models
 
                 using (var stream = store.OpenFile(filename, FileMode.Open))
                 {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem[]));
-                    var localVids = serializer.ReadObject(stream) as VideoItem[];
-                    
-                    if (localVids == null || localVids.Length == 0) return new VideoItem[] { new VideoItem { Name = "Loading from server ...", Description = "local cache was empty." } };
+                    VideoItem[] localVids;
+
+                    try
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem[]));
+                        localVids = serializer.ReadObject(stream) as VideoItem[];
+                    }
+                    catch
+                    {
+                        return GetPlaceHolder();
+                    }
+
+                    if (localVids == null || localVids.Length == 0) return GetPlaceHolder();
                     
                     return localVids;
                 }
@@ -134,11 +143,16 @@ namespace KhanViewer.Models
 
             filename = IsValidFilename(filename);
 
+
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            using (var stream = store.OpenFile(filename, FileMode.Create))
             {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
-                serializer.WriteObject(stream, videos);
+                if (store.FileExists(filename)) store.DeleteFile(filename);
+
+                using (var stream = store.OpenFile(filename, FileMode.OpenOrCreate))
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
+                    serializer.WriteObject(stream, videos);
+                }
             }
         }
 
@@ -156,6 +170,11 @@ namespace KhanViewer.Models
             };
 
             return testName;
+        }
+
+        private static VideoItem[] GetPlaceHolder()
+        {
+            return new VideoItem[] { new VideoItem { Name = "Loading from server ...", Description = "local cache was empty." } };
         }
     }
 }
