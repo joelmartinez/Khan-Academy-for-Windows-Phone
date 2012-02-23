@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Collections.Generic;
 
 namespace KhanViewer.Models
 {
@@ -128,6 +129,25 @@ namespace KhanViewer.Models
             public string Video { get; set; }
             [DataMember(Name = "png")]
             public string Screenshot { get; set; }
+        }
+
+        //http://www.khanacademy.org/api/v1/topictree
+        /*    
+    "description": "All concepts fit into the root of all knowledge", 
+    "hide": true, 
+    "id": "root", 
+    "ka_url": "http://www.khanacademy.org#root", 
+    "kind": "Topic", Url, Video
+    "relative_url": "#root", 
+    "standalone_title": "The Root of All Knowledge", 
+    "tags": [], 
+    "title": "The Root of All Knowledge"*/
+
+        // children
+        [DataContract]
+        public class JsonTreeNode
+        {
+            public IEnumerable<JsonTreeNode> Children { get; set; }
         }
     }
 }
