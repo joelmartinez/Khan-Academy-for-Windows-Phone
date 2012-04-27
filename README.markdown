@@ -9,7 +9,7 @@ I've been extremely impressed with the quality and value of the videos since I d
 
 ![Screenshot](http://codecube.net/wp-content/uploads/2010/11/screenshot_1.png "Screenshot")
 
-I wanted a way to contribute to the cause, and with Microsoft�' new platform just launching, and the fact that I wanted a project to focus on for the Windows Phone it seemed a natural fit.
+I wanted a way to contribute to the cause, and with Microsoft's new platform just launching, and the fact that I wanted a project to focus on for the Windows Phone it seemed a natural fit.
 
 In keeping with the spirit of the Khan Academy's [open source development ethos](http://sites.google.com/a/khanacademy.org/forge/for-developers/getting-started-with-the-code), I am making this project open source as well on GitHub:
-http://khanviewer.codeplex.com/
+https://github.com/joelmartinez/Khan-Academy-for-Windows-Phone
