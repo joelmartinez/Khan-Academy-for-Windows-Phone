@@ -7,7 +7,7 @@
     <ProjectGuid>{75C5CDE0-8558-4A69-9A41-5CA02C4EDDD1}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KhanViewer.Metro</RootNamespace>
+    <RootNamespace>KhanViewer</RootNamespace>
     <AssemblyName>KhanViewer.Metro</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
@@ -110,6 +110,36 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\KhanViewer\Models\Clouds.cs">
+      <Link>Models\Clouds.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\Models\DataServer.cs">
+      <Link>Models\DataServer.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\Models\KhanAcademyApi.cs">
+      <Link>Models\KhanAcademyApi.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\Models\LocalStorage.cs">
+      <Link>Models\LocalStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\Models\UIThread.cs">
+      <Link>Models\UIThread.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\Models\WebHelper.cs">
+      <Link>Models\WebHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\ViewModels\CategoryItem.cs">
+      <Link>ViewModels\CategoryItem.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\ViewModels\Item.cs">
+      <Link>ViewModels\Item.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\ViewModels\MainViewModel.cs">
+      <Link>ViewModels\MainViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\KhanViewer\ViewModels\VideoItem.cs">
+      <Link>ViewModels\VideoItem.cs</Link>
+    </Compile>
     <Compile Include="Common\BindableBase.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\BooleanNegationConverter.cs" />

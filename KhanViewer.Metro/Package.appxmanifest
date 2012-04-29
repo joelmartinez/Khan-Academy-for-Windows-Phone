@@ -6,10 +6,10 @@
             Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>KhanViewer.Metro</DisplayName>
+    <DisplayName>KhanViewer</DisplayName>
     <PublisherDisplayName>Joel</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <Description>KhanViewer.Metro</Description>
+    <Description>KhanViewer</Description>
   </Properties>
 
   <Prerequisites>
@@ -24,12 +24,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="KhanViewer.Metro.App">
+        EntryPoint="KhanViewer.App">
         <VisualElements
-            DisplayName="KhanViewer.Metro"
+            DisplayName="KhanViewer"
             Logo="Assets\Logo.png"
             SmallLogo="Assets\SmallLogo.png"
-            Description="KhanViewer.Metro"
+            Description="KhanViewer"
             ForegroundText="light"
             BackgroundColor="#222222">
             <DefaultTile ShowName="allLogos" />

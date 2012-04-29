@@ -8,7 +8,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace KhanViewer.Metro.Common
+namespace KhanViewer.Common
 {
     /// <summary>
     /// Typical implementation of Page that provides several important conveniences:

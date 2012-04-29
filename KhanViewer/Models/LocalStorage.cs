@@ -1,16 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Runtime.Serialization;
-using KhanProxy.Services;
 using System.Text.RegularExpressions;
 using System;
 
+#if WINDOWS_PHONE
+using KhanProxy.Services;
+using System.IO.IsolatedStorage;
+#endif
+
 namespace KhanViewer.Models
 {
+    #region IO
+    public interface IStorage
+    {
+    }
+
+    #endregion
+
     public static class LocalStorage
     {
+
+
         static readonly string CategoryFileName = "categories.xml";
         static readonly string VideosFileName = "videos.xml";
         static readonly string LandingBitFileName = "landed.bin";
