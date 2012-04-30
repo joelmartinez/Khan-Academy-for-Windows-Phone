@@ -5,6 +5,11 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System;
 
+#if !WINDOWS_PHONE
+using Windows.Storage;
+using KhanViewer.Common;
+#endif
+
 #if WINDOWS_PHONE
 using KhanProxy.Services;
 using System.IO.IsolatedStorage;
@@ -12,12 +17,6 @@ using System.IO.IsolatedStorage;
 
 namespace KhanViewer.Models
 {
-    #region IO
-    public interface IStorage
-    {
-    }
-
-    #endregion
 
     public static class LocalStorage
     {
@@ -31,9 +30,15 @@ namespace KhanViewer.Models
         /// <summary>Will return false only the first time a user ever runs this.
         /// Everytime thereafter, a placeholder file will have been written to disk
         /// and will trigger a value of true.</summary>
-        public static bool HasUserSeenIntro()
+        public static void HasUserSeenIntro(Action<bool> action)
         {
-            if (hasSeenIntro) return true;
+#if !WINDOWS_PHONE
+            StorageFolder folder = ApplicationData.Current.LocalFolder;// KnownFolders.DocumentsLibrary;
+            //var file = await 
+            FileAsync.Write(folder, LandingBitFileName, CreationCollisionOption.ReplaceExisting, writer => writer.WriteByte(1));
+            action(false);
+#else
+            if (hasSeenIntro) action(true);
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -44,12 +49,13 @@ namespace KhanViewer.Models
                     {
                         stream.Write(new byte[] { 1 }, 0, 1);
                     }
-                    return false;
+                    action(false);
                 }
 
                 hasSeenIntro = true;
-                return true;
+                action(true);
             }
+#endif
         }
 
         public static IEnumerable<CategoryItem> GetCategories()

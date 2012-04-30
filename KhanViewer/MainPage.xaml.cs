@@ -29,16 +29,19 @@ namespace KhanViewer
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             App.ViewModel.LoadData();
-
-            if (!App.ViewModel.HasUserSeenIntro())
-            {
-                App.ViewModel.TrackPageView("Intro", "/Intro");
-                NavigationService.Navigate(new Uri("/Intro.xaml", UriKind.Relative));
-            }
-            else
-            {
-                App.ViewModel.TrackPageView("Main", "/");
-            }
+            App.ViewModel.HasUserSeenIntro(seenit => 
+                {
+                    if (!seenit)
+                    {
+                        App.ViewModel.TrackPageView("Intro", "/Intro");
+                        NavigationService.Navigate(new Uri("/Intro.xaml", UriKind.Relative));
+                    }
+                    else
+                    {
+                        App.ViewModel.TrackPageView("Main", "/");
+                    }
+                });
+            
 
             DataContext = App.ViewModel;
             base.OnNavigatedTo(e);

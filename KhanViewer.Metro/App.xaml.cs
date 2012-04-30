@@ -45,7 +45,7 @@ namespace KhanViewer
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
-       public App()
+        public App()
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -59,6 +59,11 @@ namespace KhanViewer
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            if (!App.ViewModel.IsDataLoaded)
+            {
+                App.ViewModel.LoadData();
+            }
+
             if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
             {
                 //TODO: Load state from previously suspended application
@@ -71,6 +76,7 @@ namespace KhanViewer
             // Place the frame in the current Window and ensure that it is active
             Window.Current.Content = rootFrame;
             Window.Current.Activate();
+
         }
 
         /// <summary>

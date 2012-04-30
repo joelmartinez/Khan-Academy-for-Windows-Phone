@@ -67,9 +67,9 @@ namespace KhanViewer
         }
 
         /// <returns>true only the first time the user accesses the application.</returns>
-        public bool HasUserSeenIntro()
+        public void HasUserSeenIntro(Action<bool> action)
         {
-            return LocalStorage.HasUserSeenIntro();
+            LocalStorage.HasUserSeenIntro(action);
         }
 
         public CategoryItem GetCategory(string categoryName)
