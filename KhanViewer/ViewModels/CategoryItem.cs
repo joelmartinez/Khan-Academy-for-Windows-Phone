@@ -23,10 +23,12 @@ namespace KhanViewer
             if (!loaded)
             {
                 // first load what I know (ie. from disk)
-                var vids = LocalStorage.GetVideos(this.Name);
-                foreach (var vid in vids) Videos.Add(vid);
+                LocalStorage.GetVideos(this.Name, vids =>
+                    {
+                        foreach (var vid in vids) Videos.Add(vid);
 
-                loaded = true;
+                        loaded = true;
+                    });
 
                 // now kick off the server to the query
                 Clouds.GetVideosFromServer(this.Videos, this.Name);
@@ -40,14 +42,14 @@ namespace KhanViewer
 
         public static void Initialize(ObservableCollection<CategoryItem> items)
         {
-            
             // first load what I know
-            var vids = LocalStorage.GetCategories();
-            foreach (var vid in vids) items.Add(vid);
+            LocalStorage.GetCategories(vids =>
+                {
+                    foreach (var vid in vids) items.Add(vid);
 
-            // then start to query the server
-            Clouds.LoadCategoriesFromServer(items);
-            return;
+                    // then start to query the server
+                    Clouds.LoadCategoriesFromServer(items);
+                });
         }
     }
 }

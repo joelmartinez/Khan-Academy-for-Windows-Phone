@@ -87,20 +87,26 @@ namespace KhanViewer
             return category;
         }
 
-        public VideoItem GetVideo(string category, string name)
+        public void GetVideo(string category, string name, Action<VideoItem> result)
         {
-            var vid = LocalStorage.GetVideo(category, name);
-            if (vid != null) return vid;
+            LocalStorage.GetVideo(category, name, vid =>
+                {
+                    if (vid != null)
+                    {
+                        result(vid);
+                        return;
+                    }
 
-            // didn't have the vid on disk, query the memory store.
-            vid = this.Categories
-                .Where(c => c.Name == category)
-                .SelectMany(c => c.Videos)
-                .SingleOrDefault(v => v.Name == name);
+                    // didn't have the vid on disk, query the memory store.
+                    vid = this.Categories
+                        .Where(c => c.Name == category)
+                        .SelectMany(c => c.Videos)
+                        .SingleOrDefault(v => v.Name == name);
 
-            if (vid != null) LocalStorage.SaveVideo(vid);
+                    if (vid != null) LocalStorage.SaveVideo(vid);
 
-            return vid;
+                    result(vid);
+                });
         }
 
         /// <summary>

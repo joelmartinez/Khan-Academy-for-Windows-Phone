@@ -21,7 +21,7 @@ namespace KhanViewer
             NavigationContext.QueryString.TryGetValue("category", out category);
             NavigationContext.QueryString.TryGetValue("video", out video);
 
-            DataContext = App.ViewModel.GetVideo(category, video);
+            App.ViewModel.GetVideo(category, video, vid => DataContext = vid);
         }
 
         private void PlayVideo(object sender, System.Windows.RoutedEventArgs e)
