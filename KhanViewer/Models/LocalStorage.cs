@@ -8,6 +8,7 @@ using System;
 #if !WINDOWS_PHONE
 using Windows.Storage;
 using KhanViewer.Common;
+using System.Threading.Tasks;
 #endif
 
 #if WINDOWS_PHONE
@@ -59,11 +60,48 @@ namespace KhanViewer.Models
 #endif
         }
 
+#if !WINDOWS_PHONE
+        private async static Task<StorageFile> GetFile(string path)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            try
+            {
+                return await folder.GetFileAsync(CategoryFileName);
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+        }
+#endif
+
         public static void GetCategories(Action<IEnumerable<CategoryItem>> result)
         {
 #if !WINDOWS_PHONE
-            throw new NotImplementedException();
-            result(null);
+
+            var file = GetFile(CategoryFileName).Result;
+
+            if (file == null)
+            {
+                result(new CategoryItem[] { new CategoryItem { Name = "Loading", Description = "From Server ..." } });
+                return;
+            }
+
+            var folder = ApplicationData.Current.LocalFolder;
+            using (var stream = folder.OpenStreamForReadAsync(CategoryFileName).Result)
+            {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(CategoryItem[]));
+                var localCats = serializer.ReadObject(stream) as CategoryItem[];
+
+                if (localCats == null || localCats.Length == 0)
+                {
+                    result(new CategoryItem[] { new CategoryItem { Name = "Loading from server ...", Description = "local cache was empty" } });
+                    return;
+                }
+
+                // heh, almost read this variable as lolCats 
+                result(localCats);
+            }
 #else
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
