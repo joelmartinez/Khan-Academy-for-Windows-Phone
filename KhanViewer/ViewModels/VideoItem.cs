@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
+
+#if WINDOWS_PHONE
 using Microsoft.Phone.Tasks;
+#endif
 
 namespace KhanViewer
 {
@@ -26,6 +29,10 @@ namespace KhanViewer
         {
 
             App.ViewModel.TrackPageView(this.Name, "/" + this.Parent + "/Video/" + this.Name);
+            
+#if !WINDOWS_PHONE
+            throw new NotImplementedException();
+#else
             WebBrowserTask browser = new WebBrowserTask();
 
             if (this.VideoFileUri == null || string.IsNullOrWhiteSpace(this.VideoFileUri.ToString()))
@@ -38,6 +45,7 @@ namespace KhanViewer
             }
 
             browser.Show();
+#endif
         }
     }
 }

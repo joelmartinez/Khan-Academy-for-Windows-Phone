@@ -16,8 +16,10 @@ namespace KhanViewer.Models
         public static void Get(Uri uri, Action<string> action, Action<Exception> error)
         {
             var request = WebRequest.CreateHttp(uri);
-            request.UserAgent = "Khan Academy Windows Phone Client ";
 
+#if WINDOWS_PHONE
+            request.UserAgent = "Khan Academy Windows Phone Client ";
+#endif
             request.BeginGetResponse(i =>
             {
                 try

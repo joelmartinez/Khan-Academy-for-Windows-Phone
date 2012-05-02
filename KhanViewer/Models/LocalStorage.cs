@@ -231,9 +231,10 @@ namespace KhanViewer.Models
             var invalid = System.IO.Path.GetInvalidPathChars().Union(new char[] { ':', ' ' }).ToArray();
             Regex containsABadCharacter = new Regex("[" + Regex.Escape(new string(invalid)) + "]");
             if (containsABadCharacter.IsMatch(testName)) {
-
-                Array.ForEach(invalid,
-                    c => testName = testName.Replace(c.ToString(), String.Empty));
+                foreach(var c in invalid)
+                {
+                    testName = testName.Replace(c.ToString(), String.Empty);
+                }
             };
 
             return testName;

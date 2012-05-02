@@ -31,6 +31,12 @@ namespace KhanViewer.Models
             else
                 Dispatcher.Invoke(CoreDispatcherPriority.Normal, (s,a) => action(), null, null);
         }
+
+        public static void MessageBox(string message)
+        {
+            throw new NotImplementedException();
+        }
+
 #else
         private static readonly Dispatcher Dispatcher;
 
@@ -50,6 +56,11 @@ namespace KhanViewer.Models
                 action.Invoke();
             else
                 Dispatcher.BeginInvoke(action);
+        }
+
+        public static void MessageBox(string message)
+        {
+            Invoke(() => System.Windows.MessageBox.Show(message));
         }
 #endif
     }

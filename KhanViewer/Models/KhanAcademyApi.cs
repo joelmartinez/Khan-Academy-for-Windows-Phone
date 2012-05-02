@@ -19,7 +19,7 @@ namespace KhanViewer.Models
                     var serverItems = cats.OrderBy(c => c.Title).Select(k => new CategoryItem { Name = k.Title, Description = k.Description });
                     if (serverItems.Count() > 0)
                     {
-                        var op = System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        UIThread.Invoke(() =>
                         {
                             items.Clear();
                             foreach (var item in serverItems)
@@ -62,7 +62,7 @@ namespace KhanViewer.Models
                         Parent = category });
                     if (serverItems.Count() > 0)
                     {
-                        System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        UIThread.Invoke(() =>
                         {
                             items.Clear();
                             foreach (var item in serverItems)

@@ -2,10 +2,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using KhanViewer.Models;
-using Microsoft.Phone.Shell;
-using GoogleAnalyticsTracker;
 using System.Windows;
+using GoogleAnalyticsTracker;
+using KhanViewer.Models;
+
+#if WINDOWS_PHONE
+using Microsoft.Phone.Shell;
+#endif
 
 namespace KhanViewer
 {
@@ -41,10 +44,7 @@ namespace KhanViewer
         /// <param name="message">The error details to send to the developers.</param>
         public void SetError(string message)
         {
-            UIThread.Invoke(() =>
-                {
-                    MessageBox.Show(message);
-                });
+            UIThread.MessageBox(message);
             this.IsError = true;
             this.ErrorMessage = message;
 
@@ -74,16 +74,20 @@ namespace KhanViewer
 
         public CategoryItem GetCategory(string categoryName)
         {
+#if WINDOWS_PHONE
             var state = PhoneApplicationService.Current.State;
             
             object ocategory;
             if (state.TryGetValue(
                 categoryName, 
                 out ocategory)) return ocategory as CategoryItem;
-
+#endif
             var category = this.Categories.Where(c => c.Name == categoryName).FirstOrDefault();
             category.LoadVideos();
+
+#if WINDOWS_PHONE
             state[categoryName] = category;
+#endif
             return category;
         }
 
