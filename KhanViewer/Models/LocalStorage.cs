@@ -22,44 +22,6 @@ namespace KhanViewer.Models
     public static class LocalStorage
     {
 
-
-        static readonly string CategoryFileName = "categories.xml";
-        static readonly string VideosFileName = "videos.xml";
-        static readonly string LandingBitFileName = "landed.bin";
-        private static bool hasSeenIntro;
-
-        /// <summary>Will return false only the first time a user ever runs this.
-        /// Everytime thereafter, a placeholder file will have been written to disk
-        /// and will trigger a value of true.</summary>
-        public static void HasUserSeenIntro(Action<bool> action)
-        {
-#if !WINDOWS_PHONE
-            StorageFolder folder = ApplicationData.Current.LocalFolder;// KnownFolders.DocumentsLibrary;
-            //var file = await 
-            throw new NotImplementedException("implement if existss");
-            FileAsync.Write(folder, LandingBitFileName, CreationCollisionOption.ReplaceExisting, writer => writer.WriteByte(1));
-            action(false);
-#else
-            if (hasSeenIntro) action(true);
-
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.FileExists(LandingBitFileName))
-                {
-                    // just write a placeholder file one byte long so we know they've landed before
-                    using (var stream = store.OpenFile(LandingBitFileName, FileMode.Create))
-                    {
-                        stream.Write(new byte[] { 1 }, 0, 1);
-                    }
-                    action(false);
-                }
-
-                hasSeenIntro = true;
-                action(true);
-            }
-#endif
-        }
-
 #if !WINDOWS_PHONE
         private async static Task<StorageFile> GetFile(string path)
         {
@@ -73,7 +35,80 @@ namespace KhanViewer.Models
                 return null;
             }
         }
+
+        private async static Task<bool> FileExists(string path)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            try
+            {
+                var file = await folder.GetFileAsync(CategoryFileName);
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        private async static Task<Stream> WriteFile(string path)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            return await folder.OpenStreamForWriteAsync(path, CreationCollisionOption.ReplaceExisting);
+        }
+
+        private async static Task<StorageFolder> CreateDirectory(string path)
+        {
+            return await CreateDirectory(ApplicationData.Current.LocalFolder, path);
+        }
+
+        private async static Task<StorageFolder> CreateDirectory(StorageFolder folder, string path)
+        {
+            return await folder.CreateFolderAsync(path, CreationCollisionOption.OpenIfExists);
+        }
 #endif
+
+
+        static readonly string CategoryFileName = "categories.xml";
+        static readonly string VideosFileName = "videos.xml";
+        static readonly string LandingBitFileName = "landed.bin";
+        private static bool hasSeenIntro;
+
+        /// <summary>Will return false only the first time a user ever runs this.
+        /// Everytime thereafter, a placeholder file will have been written to disk
+        /// and will trigger a value of true.</summary>
+        public static void HasUserSeenIntro(Action<bool> action)
+        {
+            if (hasSeenIntro) action(true);
+
+#if !WINDOWS_PHONE
+            StorageFolder folder = ApplicationData.Current.LocalFolder;
+
+            if (!FileExists(LandingBitFileName).Result)
+            {
+                FileAsync.Write(folder, LandingBitFileName, CreationCollisionOption.ReplaceExisting, writer => writer.WriteByte(1));
+
+                action(false);
+                return;
+            }
+#else
+
+            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!store.FileExists(LandingBitFileName))
+                {
+                    // just write a placeholder file one byte long so we know they've landed before
+                    using (var stream = store.OpenFile(LandingBitFileName, FileMode.Create))
+                    {
+                        stream.Write(new byte[] { 1 }, 0, 1);
+                    }
+                    action(false);
+                }
+            }
+#endif
+
+            hasSeenIntro = true;
+            action(true);
+        }
 
         public static void GetCategories(Action<IEnumerable<CategoryItem>> result)
         {
@@ -131,12 +166,41 @@ namespace KhanViewer.Models
 
         public static void GetVideos(string categoryName, Action<IEnumerable<VideoItem>> result)
         {
-#if !WINDOWS_PHONE
-            throw new NotImplementedException();
-            result(null);
-#else
             string filename = categoryName + VideosFileName;
             filename = IsValidFilename(filename);
+
+#if !WINDOWS_PHONE
+            if (!FileExists(filename).Result)
+            {
+                result(new VideoItem[] { new VideoItem { Name = "Loading", Description = "From Server ..." } });
+                return;
+            }
+
+            var folder = ApplicationData.Current.LocalFolder;
+            using (var stream = folder.OpenStreamForReadAsync(filename).Result)
+            {
+                VideoItem[] localVids;
+
+                try
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem[]));
+                    localVids = serializer.ReadObject(stream) as VideoItem[];
+                }
+                catch
+                {
+                    result(GetPlaceHolder());
+                    return;
+                }
+
+                if (localVids == null || localVids.Length == 0)
+                {
+                    result(GetPlaceHolder());
+                    return;
+                }
+
+                result(localVids);
+            }
+#else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -177,13 +241,26 @@ namespace KhanViewer.Models
         /// Otherwise will return null.</summary>
         public static void GetVideo(string categoryName, string videoName, Action<VideoItem> result)
         {
-#if !WINDOWS_PHONE
-            throw new NotImplementedException();
-            result(null);
-#else
             string catpath = IsValidFilename(categoryName);
             string vidpath = IsValidFilename(videoName);
             string filename = Path.Combine(catpath, vidpath) + ".xml";
+
+#if !WINDOWS_PHONE
+            var folder = ApplicationData.Current.LocalFolder;
+
+            if (!FileExists(filename).Result)
+            {
+                result(null);
+                return;
+            }
+
+            using (var stream = folder.OpenStreamForReadAsync(filename).Result)
+            {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                var deserializedVid = serializer.ReadObject(stream) as VideoItem;
+                result(deserializedVid);
+            }
+#else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -205,12 +282,18 @@ namespace KhanViewer.Models
 
         public static void SaveVideo(VideoItem item)
         {
-#if !WINDOWS_PHONE
-            throw new NotImplementedException();
-#else
             string catpath = IsValidFilename(item.Parent);
             string vidpath = IsValidFilename(item.Name);
             string filename = Path.Combine(catpath, vidpath) + ".xml";
+
+#if !WINDOWS_PHONE
+            var folder = CreateDirectory(catpath);
+            using (var stream = WriteFile(filename).Result)
+            {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                serializer.WriteObject(stream, item);
+            }
+#else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -227,7 +310,11 @@ namespace KhanViewer.Models
         public static void SaveCategories<T>(T[] categories)
         {
 #if !WINDOWS_PHONE
-            throw new NotImplementedException();
+            using (var stream = WriteFile(CategoryFileName).Result)
+            {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
+                serializer.WriteObject(stream, categories);
+            }
 #else
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             using (var stream = store.OpenFile(CategoryFileName, FileMode.Create))
@@ -240,13 +327,17 @@ namespace KhanViewer.Models
 
         public static void SaveVideos<T>(string categoryName, T[] videos)
         {
-#if !WINDOWS_PHONE
-            throw new NotImplementedException();
-#else
             string filename = categoryName + VideosFileName;
 
             filename = IsValidFilename(filename);
 
+#if !WINDOWS_PHONE
+            using (var stream = WriteFile(filename).Result)
+            {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
+                serializer.WriteObject(stream, videos);
+            }
+#else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
