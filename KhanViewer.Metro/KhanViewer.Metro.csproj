@@ -140,6 +140,9 @@
     <Compile Include="..\KhanViewer\ViewModels\VideoItem.cs">
       <Link>ViewModels\VideoItem.cs</Link>
     </Compile>
+    <Compile Include="CategoryPage.xaml.cs">
+      <DependentUpon>CategoryPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Common\BindableBase.cs" />
     <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\BooleanNegationConverter.cs" />
@@ -153,6 +156,12 @@
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Tracker.cs" />
+    <Compile Include="Intro.xaml.cs">
+      <DependentUpon>Intro.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +184,22 @@
     <Content Include="Assets\StoreLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Page Include="CategoryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SampleData\MainViewModelSampleData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

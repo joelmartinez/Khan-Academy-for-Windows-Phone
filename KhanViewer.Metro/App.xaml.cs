@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using KhanViewer.Models;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -49,6 +50,7 @@ namespace KhanViewer
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            
         }
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace KhanViewer
 
             // Create a Frame to act navigation context and navigate to the first page
             var rootFrame = new Frame();
-            rootFrame.Navigate(typeof(BlankPage));
+            rootFrame.Navigate(typeof(MainPage));
 
             // Place the frame in the current Window and ensure that it is active
             Window.Current.Content = rootFrame;

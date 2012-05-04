@@ -152,7 +152,7 @@ namespace KhanViewer
 
             void IDisposable.Dispose()
             {
-                this.model.StopQuerying();
+                //this.model.StopQuerying();
             }
         }
 

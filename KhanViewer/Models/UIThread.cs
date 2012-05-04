@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 #else
 using Windows.UI.Core;
+using Windows.UI.Popups;
 #endif
 
 namespace KhanViewer.Models
@@ -12,12 +13,12 @@ namespace KhanViewer.Models
     public static class UIThread
     {
 #if !WINDOWS_PHONE
-        private static readonly CoreDispatcher Dispatcher;
+        private static CoreDispatcher Dispatcher;
 
-        static UIThread()
+        /// <summary>This should be called on the UI thread</summary>
+        public static void Initialize(CoreDispatcher dispatcher)
         {
-            // Store a reference to the current Dispatcher once per application
-            Dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+            Dispatcher = dispatcher;
         }
 
         /// <summary>
@@ -26,15 +27,22 @@ namespace KhanViewer.Models
         /// </summary>
         public static void Invoke(Action action)
         {
+            if (Dispatcher == null)
+            {
+                action();
+                return;
+            }
+
             if (Dispatcher.HasThreadAccess)
                 action.Invoke();
             else
-                Dispatcher.Invoke(CoreDispatcherPriority.Normal, (s,a) => action(), null, null);
+                Dispatcher.Invoke(CoreDispatcherPriority.Normal, (s,a) => action(), Dispatcher, null);
         }
 
         public static void MessageBox(string message)
         {
-            throw new NotImplementedException();
+            MessageDialog dialog = new MessageDialog(message);
+            dialog.ShowAsync();
         }
 
 #else
