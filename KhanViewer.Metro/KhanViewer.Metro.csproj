@@ -128,9 +128,6 @@
     <Compile Include="..\KhanViewer\Models\WebHelper.cs">
       <Link>Models\WebHelper.cs</Link>
     </Compile>
-    <Compile Include="..\KhanViewer\PlaceImage.cs">
-      <Link>PlaceImage.cs</Link>
-    </Compile>
     <Compile Include="..\KhanViewer\ViewModels\CategoryItem.cs">
       <Link>ViewModels\CategoryItem.cs</Link>
     </Compile>

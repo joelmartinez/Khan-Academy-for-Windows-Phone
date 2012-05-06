@@ -1,26 +1,16 @@
 ﻿// Copyright (C) Microsoft Corporation. All Rights Reserved.
 // This code released under the terms of the Microsoft Public License
 // (Ms-PL, http://opensource.org/licenses/ms-pl.html).
-/*
+
 using System;
 using System.IO;
 using System.Text;
 using System.Windows;
-
-#if WINDOWS_PHONE
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-#else
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Data;
-#endif
 
 namespace KhanViewer
 {
@@ -108,7 +98,7 @@ namespace KhanViewer
         /// <param name="newValue">New value.</param>
         private void OnSourcePropertyChanged(ImageSource oldValue, ImageSource newValue)
         {
-#if SILVERLIGHT || NETFX_CORE
+#if SILVERLIGHT
             // Avoid warning about unused parameters
             oldValue = newValue;
             newValue = oldValue;
@@ -165,7 +155,7 @@ namespace KhanViewer
         public PlaceImage()
         {
             // Load the control template
-#if SILVERLIGHT || NETFX_CORE
+#if SILVERLIGHT
             Template = (ControlTemplate)XamlReader.Load(TemplateString);
 #else
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(TemplateString)))
@@ -201,7 +191,7 @@ namespace KhanViewer
                 System.Diagnostics.Debug.WriteLine("loading img: {0}", DateTime.Now);
                 _backImage.SetBinding(Image.SourceProperty, new Binding("PlaceholderSource") { Source = this });
                 _backImage.SetBinding(Image.StretchProperty, new Binding("Stretch") { Source = this });
-#if !SILVERLIGHT && !NETFX_CORE
+#if !SILVERLIGHT
                 _backImage.SetBinding(Image.StretchDirectionProperty, new Binding("StretchDirection") { Source = this });
 #endif
             }
@@ -246,4 +236,3 @@ namespace KhanViewer
         }
     }
 }
-*/
