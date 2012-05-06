@@ -42,7 +42,7 @@ namespace KhanViewer.Models
         public static void MessageBox(string message)
         {
             MessageDialog dialog = new MessageDialog(message);
-            dialog.ShowAsync();
+            Invoke(() => dialog.ShowAsync());
         }
 
 #else
