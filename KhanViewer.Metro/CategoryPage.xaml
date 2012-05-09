@@ -29,7 +29,37 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
-            <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
+            <TextBlock x:Name="pageTitle" Grid.Column="1" Text="Khan Academy" Style="{StaticResource PageHeaderTextStyle}"/>
+        </Grid>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,12,0">
+            <ListBox x:Name="MainListBox" Margin="0,0,-12,0" ItemsSource="{Binding Videos}" SelectionChanged="MainListBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+
+                            <Border   
+                                BorderBrush="Gray" 
+                                Background="Black"
+                                BorderThickness="1" 
+                                Width="120" 
+                                Height="91" 
+                                VerticalAlignment="Top"
+                                Margin="0 0 0 20">
+                                <!--<khaaaaan:PlaceImage 
+                                    Source="{Binding VideoScreenshotUri}" 
+                                    PlaceholderSource="Assets/placeholder.png"
+                                    Width="120"  />-->
+                            </Border>
+
+                            <StackPanel Margin="0,0,0,25" Width="360">
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextTitle2Style}" FontFamily="Segoe WP SemiLight" FontSize="26.667"/>
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="12,-2,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
         <VisualStateManager.VisualStateGroups>

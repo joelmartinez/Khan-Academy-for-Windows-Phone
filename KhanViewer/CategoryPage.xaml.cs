@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 
@@ -29,7 +19,7 @@ namespace KhanViewer
             if (NavigationContext.QueryString.TryGetValue("name", out selectedIndex))
             {
                 App.ViewModel.TrackPageView(selectedIndex, "/Playlist/" + selectedIndex);
-                var category = App.ViewModel.GetCategory(selectedIndex);//.Categories.Where(c => c.Name == selectedIndex).FirstOrDefault();
+                var category = App.ViewModel.GetCategory(selectedIndex);
                 category.LoadVideos();
                 LayoutRoot.DataContext = category;
             }
@@ -43,7 +33,6 @@ namespace KhanViewer
             var item = MainListBox.SelectedItem as VideoItem;
             // Navigate to the new page
             item.Navigate();
-            //NavigationService.Navigate(new Uri("/DetailsPage.xaml?category=" + item.Parent + "&video=" + item.Name, UriKind.Relative));
 
             // Reset selected index to -1 (no selection)
             MainListBox.SelectedIndex = -1;

@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -33,6 +22,24 @@ namespace KhanViewer
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            string categoryparam = e.Parameter.ToString();
+            App.ViewModel.TrackPageView(categoryparam, "/Playlist/" + categoryparam);
+            var category = App.ViewModel.GetCategory(categoryparam);
+            category.LoadVideos();
+            pageRoot.DataContext = category;
+        }
+
+        private void MainListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // If selected index is -1 (no selection) do nothing
+            if (MainListBox.SelectedIndex == -1)
+                return;
+            var item = MainListBox.SelectedItem as VideoItem;
+            // Navigate to the new page
+            item.Navigate();
+
+            // Reset selected index to -1 (no selection)
+            MainListBox.SelectedIndex = -1;
         }
     }
 }

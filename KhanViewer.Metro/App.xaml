@@ -6,7 +6,11 @@
 
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Phone Compatibility Styles -->
             <Color x:Key="PhoneAccentColor">#6495ED</Color>
+            <Style x:Key="PhoneTextTitle2Style" TargetType="TextBlock"></Style>
+            <Style x:Key="PhoneTextSubtleStyle" TargetType="TextBlock"></Style>
+            
             <ResourceDictionary.MergedDictionaries>
 
                 <!-- 

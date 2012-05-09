@@ -54,14 +54,6 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>                    	
                     	<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                    		<!--<Rectangle Height="24" StrokeEndLineCap="Round" Stroke="Black" StrokeThickness="2" Width="44" RadiusY="5" RadiusX="5" Margin="-15,-25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.455,0.458">
-                    			<Rectangle.RenderTransform>
-                    				<CompositeTransform TranslateY="32"/>
-                    			</Rectangle.RenderTransform>
-	                        	<Rectangle.Fill>
-	                        		<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
-	                        	</Rectangle.Fill>
-	                        </Rectangle>-->
 
                             <Border   
                                 BorderBrush="Gray" 
