@@ -83,13 +83,16 @@ namespace KhanViewer.Models
 #if !WINDOWS_PHONE
             StorageFolder folder = ApplicationData.Current.LocalFolder;
 
-            if (!FileExists(LandingBitFileName).Result)
-            {
-                FileAsync.Write(folder, LandingBitFileName, CreationCollisionOption.ReplaceExisting, writer => writer.WriteByte(1));
+            FileExists(LandingBitFileName).ContinueWith(value =>
+                {
+                    if (!value.Result)
+                    {
+                        FileAsync.Write(folder, LandingBitFileName, CreationCollisionOption.ReplaceExisting, writer => writer.WriteByte(1));
 
-                action(false);
-                return;
-            }
+                        UIThread.Invoke(() => action(false));
+                        return;
+                    }
+                });
 #else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -114,29 +117,36 @@ namespace KhanViewer.Models
         {
 #if !WINDOWS_PHONE
 
-            var file = GetFile(CategoryFileName).Result;
-
-            if (file == null)
+            GetFile(CategoryFileName).ContinueWith(value =>
             {
-                result(new CategoryItem[] { new CategoryItem { Name = "Loading", Description = "From Server ..." } });
-                return;
-            }
+                var file = value.Result;
 
-            var folder = ApplicationData.Current.LocalFolder;
-            using (var stream = folder.OpenStreamForReadAsync(CategoryFileName).Result)
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(CategoryItem[]));
-                var localCats = serializer.ReadObject(stream) as CategoryItem[];
-
-                if (localCats == null || localCats.Length == 0)
+                if (file == null)
                 {
-                    result(new CategoryItem[] { new CategoryItem { Name = "Loading from server ...", Description = "local cache was empty" } });
+                    result(new CategoryItem[] { new CategoryItem { Name = "Loading", Description = "From Server ..." } });
                     return;
                 }
 
-                // heh, almost read this variable as lolCats 
-                result(localCats);
-            }
+                var folder = ApplicationData.Current.LocalFolder;
+
+                folder.OpenStreamForReadAsync(CategoryFileName).ContinueWith(filevalue =>
+                    {
+                        using (var stream = filevalue.Result)
+                        {
+                            DataContractSerializer serializer = new DataContractSerializer(typeof(CategoryItem[]));
+                            var localCats = serializer.ReadObject(stream) as CategoryItem[];
+
+                            if (localCats == null || localCats.Length == 0)
+                            {
+                                result(new CategoryItem[] { new CategoryItem { Name = "Loading from server ...", Description = "local cache was empty" } });
+                                return;
+                            }
+
+                            // heh, almost read this variable as lolCats 
+                            result(localCats);
+                        }
+                    });
+            });
 #else
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -170,36 +180,44 @@ namespace KhanViewer.Models
             filename = IsValidFilename(filename);
 
 #if !WINDOWS_PHONE
-            if (!FileExists(filename).Result)
-            {
-                result(new VideoItem[] { new VideoItem { Name = "Loading", Description = "From Server ..." } });
-                return;
-            }
 
-            var folder = ApplicationData.Current.LocalFolder;
-            using (var stream = folder.OpenStreamForReadAsync(filename).Result)
-            {
-                VideoItem[] localVids;
-
-                try
+            FileExists(filename).ContinueWith(exists =>
                 {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem[]));
-                    localVids = serializer.ReadObject(stream) as VideoItem[];
-                }
-                catch
-                {
-                    result(GetPlaceHolder());
-                    return;
-                }
+                    if (!exists.Result)
+                    {
+                        result(new VideoItem[] { new VideoItem { Name = "Loading", Description = "From Server ..." } });
+                        return;
+                    }
 
-                if (localVids == null || localVids.Length == 0)
-                {
-                    result(GetPlaceHolder());
-                    return;
-                }
+                    var folder = ApplicationData.Current.LocalFolder;
 
-                result(localVids);
-            }
+                    folder.OpenStreamForReadAsync(filename).ContinueWith(readtask =>
+                        {
+                            using (var stream = readtask.Result)
+                            {
+                                VideoItem[] localVids;
+
+                                try
+                                {
+                                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem[]));
+                                    localVids = serializer.ReadObject(stream) as VideoItem[];
+                                }
+                                catch
+                                {
+                                    result(GetPlaceHolder());
+                                    return;
+                                }
+
+                                if (localVids == null || localVids.Length == 0)
+                                {
+                                    result(GetPlaceHolder());
+                                    return;
+                                }
+
+                                result(localVids);
+                            }
+                        });
+                });
 #else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -247,19 +265,24 @@ namespace KhanViewer.Models
 
 #if !WINDOWS_PHONE
             var folder = ApplicationData.Current.LocalFolder;
+            FileExists(filename).ContinueWith(exists =>
+                {
+                    if (!exists.Result)
+                    {
+                        result(null);
+                        return;
+                    }
 
-            if (!FileExists(filename).Result)
-            {
-                result(null);
-                return;
-            }
-
-            using (var stream = folder.OpenStreamForReadAsync(filename).Result)
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
-                var deserializedVid = serializer.ReadObject(stream) as VideoItem;
-                result(deserializedVid);
-            }
+                    folder.OpenStreamForReadAsync(filename).ContinueWith(readtask =>
+                        {
+                            using (var stream = readtask.Result)
+                            {
+                                DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                                var deserializedVid = serializer.ReadObject(stream) as VideoItem;
+                                result(deserializedVid);
+                            }
+                        });
+                });
 #else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -288,11 +311,15 @@ namespace KhanViewer.Models
 
 #if !WINDOWS_PHONE
             var folder = CreateDirectory(catpath);
-            using (var stream = WriteFile(filename).Result)
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
-                serializer.WriteObject(stream, item);
-            }
+
+            WriteFile(filename).ContinueWith(opentask =>
+                {
+                    using (var stream = opentask.Result)
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                        serializer.WriteObject(stream, item);
+                    }
+                });
 #else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -310,11 +337,14 @@ namespace KhanViewer.Models
         public static void SaveCategories<T>(T[] categories)
         {
 #if !WINDOWS_PHONE
-            using (var stream = WriteFile(CategoryFileName).Result)
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
-                serializer.WriteObject(stream, categories);
-            }
+            WriteFile(CategoryFileName).ContinueWith(opentask =>
+                {
+                    using (var stream = opentask.Result)
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
+                        serializer.WriteObject(stream, categories);
+                    }
+                });
 #else
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())
             using (var stream = store.OpenFile(CategoryFileName, FileMode.Create))
@@ -332,11 +362,14 @@ namespace KhanViewer.Models
             filename = IsValidFilename(filename);
 
 #if !WINDOWS_PHONE
-            using (var stream = WriteFile(filename).Result)
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
-                serializer.WriteObject(stream, videos);
-            }
+            WriteFile(filename).ContinueWith(opentask =>
+                {
+                    using (var stream = opentask.Result)
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
+                        serializer.WriteObject(stream, videos);
+                    }
+                });
 #else
 
             using (var store = IsolatedStorageFile.GetUserStoreForApplication())

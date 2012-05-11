@@ -25,7 +25,7 @@ namespace KhanViewer
                 // first load what I know (ie. from disk)
                 LocalStorage.GetVideos(this.Name, vids =>
                     {
-                        foreach (var vid in vids) Videos.Add(vid);
+                        UIThread.Invoke(() => { foreach (var vid in vids) Videos.Add(vid); });
 
                         loaded = true;
                     });
@@ -45,7 +45,7 @@ namespace KhanViewer
             // first load what I know
             LocalStorage.GetCategories(vids =>
                 {
-                    foreach (var vid in vids) items.Add(vid);
+                    UIThread.Invoke(() => { foreach (var vid in vids) items.Add(vid); });
 
                     // then start to query the server
                     Clouds.LoadCategoriesFromServer(items);

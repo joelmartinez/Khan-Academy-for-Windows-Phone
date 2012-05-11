@@ -35,6 +35,7 @@ namespace KhanViewer
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
+
         private void GoButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(MainPage));

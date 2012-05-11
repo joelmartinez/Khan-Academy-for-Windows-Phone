@@ -62,7 +62,7 @@ namespace KhanViewer
         {
             // TODO: implement refcounting
             Querying = true;
-            NotifyPropertyChanged("Querying");
+            UIThread.Invoke(() => NotifyPropertyChanged("Querying"));
             return new QueryingHandle(this);
         }
 

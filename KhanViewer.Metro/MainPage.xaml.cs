@@ -41,12 +41,14 @@ namespace KhanViewer
             App.ViewModel.LoadData();
             App.ViewModel.HasUserSeenIntro(seenit =>
             {
+                /* // for now, this isn't working
+                 * 
                 if (!seenit)
                 {
                     App.ViewModel.TrackPageView("Intro", "/Intro");
                     Frame.Navigate(typeof(Intro));
                 }
-                else
+                else*/
                 {
                     App.ViewModel.TrackPageView("Main", "/");
                 }
