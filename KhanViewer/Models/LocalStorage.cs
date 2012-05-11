@@ -41,7 +41,7 @@ namespace KhanViewer.Models
             var folder = ApplicationData.Current.LocalFolder;
             try
             {
-                var file = await folder.GetFileAsync(CategoryFileName);
+                var file = await folder.GetFileAsync(path);
                 return true;
             }
             catch (FileNotFoundException)

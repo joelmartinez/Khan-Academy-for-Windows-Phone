@@ -53,8 +53,8 @@
                             </Border>
 
                             <StackPanel Margin="0,0,0,25" Width="360">
-                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextTitle2Style}" FontFamily="Segoe WP SemiLight" FontSize="26.667"/>
-                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="12,-2,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontFamily="Segoe WP SemiLight" FontSize="26.667"/>
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="12,-2,12,0" />
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
