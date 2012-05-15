@@ -9,24 +9,25 @@ using System.Threading.Tasks;
 namespace KhanViewer.Models
 {
 #if !WINDOWS_PHONE
-    public static class JsonHelper 
+    public static class JsonHelper
     {
         public static async Task<T> DeserializeObject<T>(string url) where T : class
         {
-            return await DeserializeObject<T>(new Uri(url)); 
+            return await DeserializeObject<T>(new Uri(url));
         }
 
-    public static async Task<T> DeserializeObject<T>(Uri url) where T : class 
-    {
-        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
-        try 
+        public static async Task<T> DeserializeObject<T>(Uri url) where T : class
         {
-            HttpResponseMessage response = await new HttpClient().GetAsync(url);
-            return serializer.ReadObject(await response.Content.ReadAsStreamAsync()) as T;
-        } 
-        catch (Exception ex) 
-        {
-            return null;                 
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+            try
+            {
+                HttpResponseMessage response = await new HttpClient().GetAsync(url);
+                return serializer.ReadObject(await response.Content.ReadAsStreamAsync()) as T;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 #endif
