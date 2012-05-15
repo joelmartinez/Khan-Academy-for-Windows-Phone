@@ -46,10 +46,10 @@
                                 Height="91" 
                                 VerticalAlignment="Top"
                                 Margin="0 0 0 20">
-                                <!--<khaaaaan:PlaceImage 
+                                <!--<Image 
                                     Source="{Binding VideoScreenshotUri}" 
-                                    PlaceholderSource="Assets/placeholder.png"
                                     Width="120"  />-->
+                                
                             </Border>
 
                             <StackPanel Margin="0,0,0,25" Width="360">
