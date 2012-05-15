@@ -29,8 +29,18 @@ namespace KhanViewer.Common
 
         public static async void Write(StorageFolder folder, string fileName, CreationCollisionOption collisionOption, Action<DataWriter> writer, Action<bool> complete = null)
         {
+            var file = await folder.CreateFileAsync(fileName);
+            var stream = await file.OpenAsync(FileAccessMode.ReadWrite);
+            var outStream = stream.GetOutputStreamAt(0);
 
+            DataWriter datawriter = new DataWriter(outStream);
+
+            writer(datawriter);
+
+            await datawriter.StoreAsync();
+            bool result = await outStream.FlushAsync();
+
+            if (complete != null) complete(result);
         }
-
     }
 }

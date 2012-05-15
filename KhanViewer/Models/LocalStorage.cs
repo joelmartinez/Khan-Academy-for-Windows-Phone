@@ -21,7 +21,7 @@ namespace KhanViewer.Models
 
     public static class LocalStorage
     {
-
+        
 #if !WINDOWS_PHONE
         private async static Task<StorageFile> GetFile(string path)
         {
