@@ -16,9 +16,17 @@ namespace KhanViewer.Models
             {
                 using (queryHandle)
                 {
-                    var serverItems = cats.OrderBy(c => c.Title).Select(k => new CategoryItem { Name = k.Title, Description = k.Description });
+                    var serverItems = cats
+                        .Select(k => new CategoryItem 
+                        { 
+                            Name = k.Title, 
+                            Description = k.Description, 
+                            Slug = k.ExtendedSlug 
+                        })
+                        .OrderBy(k => k.Slug);
                     if (serverItems.Count() > 0)
                     {
+                        // load the items up for the UI
                         UIThread.Invoke(() =>
                         {
                             items.Clear();
@@ -28,6 +36,10 @@ namespace KhanViewer.Models
                             }
                         });
 
+                        // parse out the top level structures
+                        var grouped = serverItems.GroupBy(i => i.GroupKey);
+
+                        // save to disk
                         localSaveAction(serverItems.ToArray());
                     }
                     else
@@ -98,6 +110,8 @@ namespace KhanViewer.Models
             public string Description { get; set; }
             [DataMember(Name = "youtube_id")]
             public string YoutubeId { get; set; }
+            [DataMember(Name = "extended_slug")]
+            public string ExtendedSlug { get; set; }
         }
 
         [DataContract]

@@ -18,6 +18,35 @@ namespace KhanViewer
         [DataMember]
         public ObservableCollection<VideoItem> Videos { get; set; }
 
+        [DataMember]
+        public string Slug { get; set; }
+
+        /// <summary>This is the top level group</summary>
+        /// <remarks>Parsed from the first element in the slug</remarks>
+        public string GroupKey
+        {
+            get
+            {
+                // make sure not empty
+                if (string.IsNullOrWhiteSpace(this.Slug)) return string.Empty;
+
+                string value;
+
+                if (!this.Slug.Contains("/"))
+                {
+                    value = this.Slug;
+                }
+                else
+                {
+                    value = this.Slug.Substring(0, this.Slug.IndexOf("/"));
+                }
+
+                value = value.Replace("-", " ");
+
+                return value;
+            }
+        }
+
         public void LoadVideos()
         {
             if (!loaded)
