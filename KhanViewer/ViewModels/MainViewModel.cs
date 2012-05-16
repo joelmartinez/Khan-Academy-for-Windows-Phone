@@ -14,7 +14,11 @@ namespace KhanViewer
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+#if WINDOWS_PHONE
         Tracker tracker = new Tracker("UA-859807-2", "http://khanacademyforwindowsphone.com");
+#else
+        Tracker tracker = new Tracker("UA-859807-3", "http://khanacademyforwindowsrt.com");
+#endif
 
         public MainViewModel()
         {
