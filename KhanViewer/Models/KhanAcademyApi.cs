@@ -9,13 +9,14 @@ namespace KhanViewer.Models
 
     public sealed class KhanAcademyApi : DataServer
     {
-        protected override void LoadCategories(ObservableCollection<CategoryItem> items, Action<CategoryItem[]> localSaveAction)
+        protected override void LoadCategories(ObservableCollection<GroupItem> groups, ObservableCollection<CategoryItem> items, Action<CategoryItem[]> localSaveAction)
         {
             var queryHandle = App.ViewModel.StartQuerying();
             WebHelper.Json<JsonCategory[]>("http://www.khanacademy.org/api/v1/playlists", cats =>
             {
                 using (queryHandle)
                 {
+                    // sort the playlists
                     var serverItems = cats
                         .Select(k => new CategoryItem 
                         { 
@@ -24,20 +25,21 @@ namespace KhanViewer.Models
                             Slug = k.ExtendedSlug 
                         })
                         .OrderBy(k => k.Slug);
+
                     if (serverItems.Count() > 0)
                     {
+                        // parse out the top level structures
+                        var grouped = GroupItem.CreateGroups(serverItems);
+
                         // load the items up for the UI
                         UIThread.Invoke(() =>
                         {
-                            items.Clear();
-                            foreach (var item in serverItems)
-                            {
-                                items.Add(item);
-                            }
-                        });
+                            groups.Clear();
+                            foreach (var group in grouped) groups.Add(group);
 
-                        // parse out the top level structures
-                        var grouped = serverItems.GroupBy(i => i.GroupKey);
+                            items.Clear();
+                            foreach (var item in serverItems) items.Add(item);
+                        });
 
                         // save to disk
                         localSaveAction(serverItems.ToArray());

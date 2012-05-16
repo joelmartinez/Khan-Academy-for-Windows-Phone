@@ -22,10 +22,13 @@ namespace KhanViewer
 
         public MainViewModel()
         {
+            this.Groups = new ObservableCollection<GroupItem>();
             this.Categories = new ObservableCollection<CategoryItem>();
         }
 
         #region Properties
+
+        public ObservableCollection<GroupItem> Groups { get; private set; }
 
         public ObservableCollection<CategoryItem> Categories { get; private set; }
 
@@ -126,7 +129,7 @@ namespace KhanViewer
             {
                 this.IsDataLoaded = true;
                 
-                CategoryItem.Initialize(this.Categories);
+                CategoryItem.Initialize(this.Groups, this.Categories);
             }
         }
 

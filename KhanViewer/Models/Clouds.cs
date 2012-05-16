@@ -12,9 +12,9 @@ namespace KhanViewer.Models
         }
 
         /// <summary>Queries the server for a list of all categories</summary>
-        public static void LoadCategoriesFromServer(ObservableCollection<CategoryItem> items)
+        public static void LoadCategoriesFromServer(ObservableCollection<GroupItem> groups, ObservableCollection<CategoryItem> items)
         {
-            server.LoadCategories(items);
+            server.LoadCategories(groups, items);
         }
 
         /// <summary>Given a category, will query the server for those videos.</summary>
