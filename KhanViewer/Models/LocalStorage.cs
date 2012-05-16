@@ -261,14 +261,14 @@ namespace KhanViewer.Models
         {
 #if !WINDOWS_PHONE
             var folder = ApplicationData.Current.LocalFolder;
-            if (await FileExists(filename))
+            if (await FileExists(LAST_VIDEO_FILENAME))
             {
                 return null;
             }
 
-            var readtask = await folder.OpenStreamForReadAsync(filename);
+            var readtask = await folder.OpenStreamForReadAsync(LAST_VIDEO_FILENAME);
                         
-            using (var stream = readtask.Result)
+            using (var stream = readtask)
             {
                 DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
                 var deserializedVid = serializer.ReadObject(stream) as VideoItem;
