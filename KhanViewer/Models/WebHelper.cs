@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+
+#if !WINDOWS_PHONE
+using System.Net.Http;
+#endif
 
 namespace KhanViewer.Models
 {

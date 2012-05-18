@@ -3,7 +3,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using KhanViewer.Models;
+
+#if !WINDOWS_PHONE
 using Windows.UI;
+#else
+using System.Windows.Media;
+#endif
 
 namespace KhanViewer
 {
@@ -53,10 +58,14 @@ namespace KhanViewer
             return grouped;
         }
 
-        private static Windows.UI.Color AssignNextColor()
+        private static Color AssignNextColor()
         {
             // TODO: write color array and logic to assign colors
+#if !WINDOWS_PHONE
             return ColorHelper.FromArgb(150, 150, 150, 150);
+#else
+            return Color.FromArgb(150, 150, 150, 150);
+#endif
         }
     }
 
