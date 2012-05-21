@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System;
 
 #if !WINDOWS_PHONE
@@ -12,7 +13,6 @@ using System.Threading.Tasks;
 #endif
 
 #if WINDOWS_PHONE
-using KhanProxy.Services;
 using System.IO.IsolatedStorage;
 #endif
 
@@ -71,6 +71,7 @@ namespace KhanViewer.Models
         static readonly string CategoryFileName = "categories.xml";
         static readonly string VideosFileName = "videos.xml";
         static readonly string LandingBitFileName = "landed.bin";
+        static readonly string LAST_VIDEO_FILENAME = "lastvideoviewed.xml";
         private static bool hasSeenIntro;
 
         /// <summary>Will return false only the first time a user ever runs this.
@@ -254,6 +255,42 @@ namespace KhanViewer.Models
             }
 #endif
         }
+        
+        /// <summary>Gets you the last viewed video. Or null if none viewed previously.</summary>
+        public static async Task<VideoItem> GetLastViewedAsync()
+        {
+#if !WINDOWS_PHONE
+            var folder = ApplicationData.Current.LocalFolder;
+            if (await FileExists(filename))
+            {
+                return null;
+            }
+
+            var readtask = await folder.OpenStreamForReadAsync(filename);
+                        
+            using (var stream = readtask.Result)
+            {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                var deserializedVid = serializer.ReadObject(stream) as VideoItem;
+                return deserializedVid;
+            }
+#else
+            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!store.FileExists(LAST_VIDEO_FILENAME))
+                {
+                    return null;
+                }
+
+                using (var stream = store.OpenFile(LAST_VIDEO_FILENAME, FileMode.Open))
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                    var deserializedVid = serializer.ReadObject(stream) as VideoItem;
+                    return deserializedVid;
+                }
+            }
+#endif
+        }
 
         /// <summary>If a specific video item is available on disk, it will be deserialized.
         /// Otherwise will return null.</summary>
@@ -308,11 +345,21 @@ namespace KhanViewer.Models
             string catpath = IsValidFilename(item.Parent);
             string vidpath = IsValidFilename(item.Name);
             string filename = Path.Combine(catpath, vidpath) + ".xml";
+            
 
 #if !WINDOWS_PHONE
             var folder = CreateDirectory(catpath);
 
             WriteFile(filename).ContinueWith(opentask =>
+                {
+                    using (var stream = opentask.Result)
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                        serializer.WriteObject(stream, item);
+                    }
+                });
+                       
+            WriteFile(LAST_VIDEO_FILENAME).ContinueWith(opentask =>
                 {
                     using (var stream = opentask.Result)
                     {
@@ -326,6 +373,13 @@ namespace KhanViewer.Models
             {
                 if (!store.DirectoryExists(catpath)) store.CreateDirectory(catpath);
                 using (var stream = store.OpenFile(filename, FileMode.Create))
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
+                    serializer.WriteObject(stream, item);
+                }
+
+                // indicate that this was the last video viewed
+                using (var stream = store.OpenFile(LAST_VIDEO_FILENAME, FileMode.Create))
                 {
                     DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
                     serializer.WriteObject(stream, item);
