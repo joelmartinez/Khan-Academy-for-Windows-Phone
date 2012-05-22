@@ -36,7 +36,8 @@ namespace KhanViewer
                 return;
             var item = MainListBox.SelectedItem as VideoItem;
             // Navigate to the new page
-            item.Navigate();
+            //item.Navigate();
+            Frame.Navigate(typeof(VideoPlayer), item);
 
             // Reset selected index to -1 (no selection)
             MainListBox.SelectedIndex = -1;

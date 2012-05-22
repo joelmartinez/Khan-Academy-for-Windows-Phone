@@ -36,6 +36,11 @@
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
         </Grid>
 
+        <MediaElement
+            x:Name="vid"
+            Grid.Row="1"
+            Source="{Binding VideoFileUri}"
+            />
         <VisualStateManager.VisualStateGroups>
 
             <!-- Visual states reflect the application's view state -->

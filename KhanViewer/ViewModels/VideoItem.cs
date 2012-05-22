@@ -30,9 +30,9 @@ namespace KhanViewer
 
             App.ViewModel.TrackPageView(this.Name, "/" + this.Parent + "/Video/" + this.Name);
             
-            bool hasVideoUri = this.VideoFileUri == null || string.IsNullOrWhiteSpace(this.VideoFileUri.ToString());
+            bool noVideoFileUri = this.VideoFileUri == null || string.IsNullOrWhiteSpace(this.VideoFileUri.ToString());
 #if !WINDOWS_PHONE
-            if (hasVideoUri)
+            if (noVideoFileUri)
             {
                 Windows.System.Launcher.LaunchUriAsync(this.VideoUri);
             }
@@ -43,7 +43,7 @@ namespace KhanViewer
 #else
             WebBrowserTask browser = new WebBrowserTask();
 
-            if (hasVideoUri)
+            if (noVideoFileUri)
             {
                 browser.Uri = this.VideoUri;
             }

@@ -33,6 +33,10 @@ namespace KhanViewer
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var video = e.Parameter as VideoItem;
+            this.DataContext = video;
+
+            vid.Play();
         }
     }
 }
