@@ -6,23 +6,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
 
-#if !WINDOWS_PHONE
 using Windows.Storage;
 using KhanViewer.Common;
-using System.Threading.Tasks;
-#endif
-
-#if WINDOWS_PHONE
-using System.IO.IsolatedStorage;
-#endif
 
 namespace KhanViewer.Models
 {
-
     public static class LocalStorage
     {
-        
-#if !WINDOWS_PHONE
         private async static Task<StorageFile> GetFile(string path)
         {
             var folder = ApplicationData.Current.LocalFolder;
@@ -65,8 +55,6 @@ namespace KhanViewer.Models
         {
             return await folder.CreateFolderAsync(path, CreationCollisionOption.OpenIfExists);
         }
-#endif
-
 
         static readonly string CategoryFileName = "categories.xml";
         static readonly string VideosFileName = "videos.xml";
@@ -81,7 +69,6 @@ namespace KhanViewer.Models
         {
             if (hasSeenIntro) action(true);
 
-#if !WINDOWS_PHONE
             StorageFolder folder = ApplicationData.Current.LocalFolder;
 
             FileExists(LandingBitFileName).ContinueWith(value =>
@@ -94,21 +81,6 @@ namespace KhanViewer.Models
                         return;
                     }
                 });
-#else
-
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.FileExists(LandingBitFileName))
-                {
-                    // just write a placeholder file one byte long so we know they've landed before
-                    using (var stream = store.OpenFile(LandingBitFileName, FileMode.Create))
-                    {
-                        stream.Write(new byte[] { 1 }, 0, 1);
-                    }
-                    action(false);
-                }
-            }
-#endif
 
             hasSeenIntro = true;
             action(true);
@@ -116,8 +88,6 @@ namespace KhanViewer.Models
 
         public static void GetCategories(Action<IEnumerable<CategoryItem>> result)
         {
-#if !WINDOWS_PHONE
-
             GetFile(CategoryFileName).ContinueWith(value =>
             {
                 var file = value.Result;
@@ -148,39 +118,13 @@ namespace KhanViewer.Models
                         }
                     });
             });
-#else
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.FileExists(CategoryFileName))
-                {
-                    result(new CategoryItem[] { new CategoryItem { Name = "Loading", Description = "From Server ..." } });
-                    return;
-                }
 
-                using (var stream = store.OpenFile(CategoryFileName, FileMode.Open))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(CategoryItem[]));
-                    var localCats = serializer.ReadObject(stream) as CategoryItem[];
-
-                    if (localCats == null || localCats.Length == 0)
-                    {
-                        result(new CategoryItem[] { new CategoryItem { Name = "Loading from server ...", Description = "local cache was empty" } });
-                        return;
-                    }
-
-                    // heh, almost read this variable as lolCats 
-                    result( localCats);
-                }
-            }
-#endif
         }
 
         public static void GetVideos(string categoryName, Action<IEnumerable<VideoItem>> result)
         {
             string filename = categoryName + VideosFileName;
             filename = IsValidFilename(filename);
-
-#if !WINDOWS_PHONE
 
             FileExists(filename).ContinueWith(exists =>
                 {
@@ -219,47 +163,11 @@ namespace KhanViewer.Models
                             }
                         });
                 });
-#else
-
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.FileExists(filename))
-                {
-                    result(new VideoItem[] { new VideoItem { Name = "Loading", Description = "From Server ..." } });
-                    return;
-                }
-
-                using (var stream = store.OpenFile(filename, FileMode.Open))
-                {
-                    VideoItem[] localVids;
-
-                    try
-                    {
-                        DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem[]));
-                        localVids = serializer.ReadObject(stream) as VideoItem[];
-                    }
-                    catch
-                    {
-                        result(GetPlaceHolder());
-                        return;
-                    }
-
-                    if (localVids == null || localVids.Length == 0)
-                    {
-                        result(GetPlaceHolder());
-                        return;
-                    }
-                    
-                    result(localVids);
-                }
-            }
-#endif
         }
         
         /// <summary>Gets you the last viewed video. Or null if none viewed previously.</summary>
         public static async Task<VideoItem> GetLastViewedAsync()
         {
-#if !WINDOWS_PHONE
             var folder = ApplicationData.Current.LocalFolder;
             if (await FileExists(LAST_VIDEO_FILENAME))
             {
@@ -274,22 +182,6 @@ namespace KhanViewer.Models
                 var deserializedVid = serializer.ReadObject(stream) as VideoItem;
                 return deserializedVid;
             }
-#else
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.FileExists(LAST_VIDEO_FILENAME))
-                {
-                    return null;
-                }
-
-                using (var stream = store.OpenFile(LAST_VIDEO_FILENAME, FileMode.Open))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
-                    var deserializedVid = serializer.ReadObject(stream) as VideoItem;
-                    return deserializedVid;
-                }
-            }
-#endif
         }
 
         /// <summary>If a specific video item is available on disk, it will be deserialized.
@@ -300,7 +192,6 @@ namespace KhanViewer.Models
             string vidpath = IsValidFilename(videoName);
             string filename = Path.Combine(catpath, vidpath) + ".xml";
 
-#if !WINDOWS_PHONE
             var folder = ApplicationData.Current.LocalFolder;
             FileExists(filename).ContinueWith(exists =>
                 {
@@ -320,24 +211,6 @@ namespace KhanViewer.Models
                             }
                         });
                 });
-#else
-
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.FileExists(filename))
-                {
-                    result(null);
-                    return;
-                }
-
-                using (var stream = store.OpenFile(filename, FileMode.Open))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
-                    var deserializedVid = serializer.ReadObject(stream) as VideoItem;
-                    result( deserializedVid );
-                }
-            }
-#endif
         }
 
         public static void SaveVideo(VideoItem item)
@@ -346,8 +219,6 @@ namespace KhanViewer.Models
             string vidpath = IsValidFilename(item.Name);
             string filename = Path.Combine(catpath, vidpath) + ".xml";
             
-
-#if !WINDOWS_PHONE
             var folder = CreateDirectory(catpath);
 
             WriteFile(filename).ContinueWith(opentask =>
@@ -367,30 +238,10 @@ namespace KhanViewer.Models
                         serializer.WriteObject(stream, item);
                     }
                 });
-#else
-
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (!store.DirectoryExists(catpath)) store.CreateDirectory(catpath);
-                using (var stream = store.OpenFile(filename, FileMode.Create))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
-                    serializer.WriteObject(stream, item);
-                }
-
-                // indicate that this was the last video viewed
-                using (var stream = store.OpenFile(LAST_VIDEO_FILENAME, FileMode.Create))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(VideoItem));
-                    serializer.WriteObject(stream, item);
-                }
-            }
-#endif
         }
 
         public static void SaveCategories<T>(T[] categories)
         {
-#if !WINDOWS_PHONE
             WriteFile(CategoryFileName).ContinueWith(opentask =>
                 {
                     using (var stream = opentask.Result)
@@ -399,14 +250,6 @@ namespace KhanViewer.Models
                         serializer.WriteObject(stream, categories);
                     }
                 });
-#else
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            using (var stream = store.OpenFile(CategoryFileName, FileMode.Create))
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
-                serializer.WriteObject(stream, categories);
-            }
-#endif
         }
 
         public static void SaveVideos<T>(string categoryName, T[] videos)
@@ -415,7 +258,6 @@ namespace KhanViewer.Models
 
             filename = IsValidFilename(filename);
 
-#if !WINDOWS_PHONE
             WriteFile(filename).ContinueWith(opentask =>
                 {
                     using (var stream = opentask.Result)
@@ -424,19 +266,6 @@ namespace KhanViewer.Models
                         serializer.WriteObject(stream, videos);
                     }
                 });
-#else
-
-            using (var store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (store.FileExists(filename)) store.DeleteFile(filename);
-
-                using (var stream = store.OpenFile(filename, FileMode.OpenOrCreate))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(T[]));
-                    serializer.WriteObject(stream, videos);
-                }
-            }
-#endif
         }
 
         /// <summary>Verifies if there are invalid characters, and if so, removes them from the filename</summary>
