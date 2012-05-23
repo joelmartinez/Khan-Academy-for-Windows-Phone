@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-#if !WINDOWS_PHONE
-using System.Net.Http;
-#endif
-
 namespace KhanViewer.Models
 {
-#if !WINDOWS_PHONE
     public static class JsonHelper
     {
         public static async Task<T> DeserializeObject<T>(string url) where T : class
@@ -33,7 +29,6 @@ namespace KhanViewer.Models
             }
         }
     }
-#endif
 
     public static class WebHelper
     {
@@ -46,9 +41,6 @@ namespace KhanViewer.Models
         {
             var request = WebRequest.CreateHttp(uri);
 
-#if WINDOWS_PHONE
-            request.UserAgent = "Khan Academy Windows Phone Client ";
-#endif
             request.BeginGetResponse(i =>
             {
                 try
