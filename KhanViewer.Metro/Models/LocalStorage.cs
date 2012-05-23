@@ -1,61 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System;
-
-using Windows.Storage;
 using KhanViewer.Common;
+using Windows.Storage;
 
 namespace KhanViewer.Models
 {
     public static class LocalStorage
     {
-        private async static Task<StorageFile> GetFile(string path)
-        {
-            var folder = ApplicationData.Current.LocalFolder;
-            try
-            {
-                return await folder.GetFileAsync(CategoryFileName);
-            }
-            catch (FileNotFoundException)
-            {
-                return null;
-            }
-        }
-
-        private async static Task<bool> FileExists(string path)
-        {
-            var folder = ApplicationData.Current.LocalFolder;
-            try
-            {
-                var file = await folder.GetFileAsync(path);
-                return true;
-            }
-            catch (FileNotFoundException)
-            {
-                return false;
-            }
-        }
-
-        private async static Task<Stream> WriteFile(string path)
-        {
-            var folder = ApplicationData.Current.LocalFolder;
-            return await folder.OpenStreamForWriteAsync(path, CreationCollisionOption.ReplaceExisting);
-        }
-
-        private async static Task<StorageFolder> CreateDirectory(string path)
-        {
-            return await CreateDirectory(ApplicationData.Current.LocalFolder, path);
-        }
-
-        private async static Task<StorageFolder> CreateDirectory(StorageFolder folder, string path)
-        {
-            return await folder.CreateFolderAsync(path, CreationCollisionOption.OpenIfExists);
-        }
-
         static readonly string CategoryFileName = "categories.xml";
         static readonly string VideosFileName = "videos.xml";
         static readonly string LandingBitFileName = "landed.bin";
@@ -288,6 +244,49 @@ namespace KhanViewer.Models
         private static VideoItem[] GetPlaceHolder()
         {
             return new VideoItem[] { new VideoItem { Name = "Loading from server ...", Description = "local cache was empty." } };
+        }
+
+        private async static Task<StorageFile> GetFile(string path)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            try
+            {
+                return await folder.GetFileAsync(CategoryFileName);
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        private async static Task<bool> FileExists(string path)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            try
+            {
+                var file = await folder.GetFileAsync(path);
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        private async static Task<Stream> WriteFile(string path)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            return await folder.OpenStreamForWriteAsync(path, CreationCollisionOption.ReplaceExisting);
+        }
+
+        private async static Task<StorageFolder> CreateDirectory(string path)
+        {
+            return await CreateDirectory(ApplicationData.Current.LocalFolder, path);
+        }
+
+        private async static Task<StorageFolder> CreateDirectory(StorageFolder folder, string path)
+        {
+            return await folder.CreateFolderAsync(path, CreationCollisionOption.OpenIfExists);
         }
     }
 }
